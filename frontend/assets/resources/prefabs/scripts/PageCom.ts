@@ -7,8 +7,11 @@
 
 const {ccclass, property} = cc._decorator;
 
+
+
 @ccclass
 export default class PageCom extends cc.Component {
+    public static PAGE_CHANGE = "page_change"
 
     @property(cc.Node)
     leftBtn:cc.Node
@@ -27,7 +30,7 @@ export default class PageCom extends cc.Component {
     public set chooseNum(value: number) {
         this._chooseNum = value;
         this.updateRender()
-
+        cc.game.emit(PageCom.PAGE_CHANGE,this.chooseNum)
     }
 
 

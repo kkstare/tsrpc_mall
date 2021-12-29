@@ -22,8 +22,8 @@ export default class BackView extends cc.Component {
     // LIFE-CYCLE CALLBACKS:
 
     onLoad () {
-        this.orderBtn.on(cc.Node.EventType.TOUCH_END,this.openGoodsView,this)
-        this.goodsBtn.on(cc.Node.EventType.TOUCH_END,this.openOrderView,this)
+        this.orderBtn.on(cc.Node.EventType.TOUCH_END,this.openOrderView ,this)
+        this.goodsBtn.on(cc.Node.EventType.TOUCH_END,this.openGoodsView,this)
 
 
     }

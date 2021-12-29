@@ -73,12 +73,31 @@ export class DbMgr {
         if(!userData){
             return null
         }
+        let add = true
+        for (let index = 0; index < userData.cart.length; index++) {
+            // const element = array[index];
+            if(!add){
+                continue
+            }
+            console.log(userData.cart[index].goodId , data.goodId)
+            console.log( data.goodId.equals(userData.cart[index].goodId))
+
+            if(data.goodId.equals(userData.cart[index].goodId) ){
+                userData.cart[index].goodNum+=data.goodNum
+                add = false
+            }   
+        }
+        if(add){
+            userData.cart.push({
+                "goodId":data.goodId,
+                "goodNum":data.goodNum
+            })
+        }
+
+
         let op = await DbMgr.db.collection('users').updateOne({_id:data.userId},{
-            $addToSet:{
-                cart:{
-                    "goodId":data.goodId,
-                    "goodNum":data.goodNum
-                }
+            $set:{
+                cart:userData.cart
             }
         })
         console.log(op)
@@ -87,36 +106,67 @@ export class DbMgr {
 
     static async getCart(data:ReqGetCart) {
         let op = await DbMgr.db.collection('users').findOne({_id:data.userId})
-
+        // op.cart
         console.log(op)
         return op
     }
 
     static async buyGoods(data:ReqBuyGoods) {
         // let op = await DbMgr.db.collection('users').findOne({_id:data.userId})
-        let userData = await DbMgr.db.collection('users').findOne({_id:data.userId})
+        // let userData = await DbMgr.db.collection('users').findOne({_id:data.userId})
+        let userData = await DbMgr.db.aggregate([
+            {
+                $lookup:{
+                    from:"users",
+                    localField:"_id",
+                    foreignField:"userid",
+                    as:"userId"
+                }
+            }
+            // {
+            //     $lookup:{
+            //         from:"goods",
+            //         localField:"_id",
+            //         foreignField:"userid",
+            //         as:"userId"
+            //     }
+            // }
+        ])
+        console.log("userData========================")
+        console.log(userData)
         if(!userData){
             return
         }
         let money = 0
-        for (let index = 0; index < data.cart.length; index++) {
-            let good = await DbMgr.db.collection('goods').findOne({_id:data.cart[index].goodId})
-            let allPrice = good!.price * data.cart[index].goodNum
-            money+=allPrice
-        }
+        let msg = "" 
+        // for (let index = 0; index < data.cart.length; index++) {
+        //     let good = await DbMgr.db.collection('goods').findOne({_id:data.cart[index].goodId})
+        //     let allPrice = good!.price * data.cart[index].goodNum
+        //     if(good!.restNum < data.cart[index].goodNum ){
+        //         msg += good!.name +"数量不足;"
+        //     }
+        //     money+=allPrice
+        // }
 
-        if(userData.money < money){
-            console.log("用户只有",userData.money,"共需",money)
-            return null
-        }
+        // if(msg != ""){
+        //     console.log(msg)
+        //     return null
+        // }
 
-        let op = await DbMgr.db.collection('users').findOneAndUpdate({_id:data.userId},{
-            $set:{
-                money: userData.money - money
-            }
-        })
+        // if(userData.money < money){
+        //     console.log("用户只有",userData.money,"共需",money)
+        //     return null
+        // }
 
-        return op
+        // let op = await DbMgr.db.collection('users').findOneAndUpdate({_id:data.userId},{
+        //     $set:{
+        //         money: userData.money - money
+        //     }
+        // })
+
+        // return op
+
+        return null
     }
 
 

@@ -62,16 +62,16 @@ export default class AddGoodsWindow extends cc.Component {
             ret = await NetMgr.client.callApi('AddGood', {
                 'Name':this.goodName.string,
                 'Des':this.des.string,
-                'price':~~this.price.string,
-                'restNum':~~this.num.string
+                'price':Number(this.price.string),
+                'restNum':Number(this.num.string)
             });
         }else{
             ret = await NetMgr.client.callApi('EditGood', {
                 '_id':this.data._id,
                 'Name':this.goodName.string,
                 'Des':this.des.string,
-                'price':~~this.price.string,
-                'restNum':~~this.num.string
+                'price':Number(this.price.string),
+                'restNum':Number(this.num.string)
             });  
         }
 

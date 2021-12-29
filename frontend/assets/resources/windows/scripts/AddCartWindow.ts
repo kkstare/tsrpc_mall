@@ -7,6 +7,7 @@
 
 import DataMgr from "../../../scripts/DataMgr";
 import NetMgr from "../../../scripts/NetMgr";
+import PageCom from "../../prefabs/scripts/PageCom";
 
 const {ccclass, property} = cc._decorator;
 
@@ -21,17 +22,25 @@ export default class AddCartWindow extends cc.Component {
     price:cc.Label
     @property(cc.Label)
     num:cc.Label
+
+    @property(cc.Label)
+    allPrice:cc.Label
     // LIFE-CYCLE CALLBACKS:
     @property(cc.Node)
     closeBtn:cc.Node
     @property(cc.Node)
     addBtn:cc.Node
 
+    @property(PageCom)
+    pageCom:PageCom
+
+    private chooseNum
     private data
     onLoad () {
         this.addBtn.on(cc.Node.EventType.TOUCH_END,this.addCartClick,this)
         this.closeBtn.on(cc.Node.EventType.TOUCH_END,this.close,this)
 
+        cc.game.on(PageCom.PAGE_CHANGE,this.upNum,this)
     }
 
     setData(data){
@@ -42,17 +51,18 @@ export default class AddCartWindow extends cc.Component {
         this.price.string = this.data.price+""
         this.num.string = this.data.restNum+""
     }   
+    upNum(num){
+        console.log(num)
+        this.chooseNum = num
+        this.allPrice.string = num*this.data.price +""
 
+    }
     async addCartClick(){
           
         let ret = await NetMgr.client.callApi('AddCart', {
             'userId':DataMgr.userId,
             'goodId':this.data._id,
-            'goodNum':100
-            // 'Name':this.goodName.string,
-            // 'Des':this.des.string,
-            // 'price':~~this.price.string,
-            // 'restNum':~~this.num.string
+            'goodNum':this.chooseNum
         });
     }
     close(){
