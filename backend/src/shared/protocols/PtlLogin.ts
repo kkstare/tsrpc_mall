@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import { BaseRequest, BaseResponse, BaseConf } from "./base";
 
 export enum USERTYPR{
@@ -10,9 +11,11 @@ export interface ReqLogin extends BaseRequest {
 }
 
 export interface ResLogin extends BaseResponse {
+    useId:ObjectId;
     code: number;
     msg:string;
     type:USERTYPR;
+    money:number
 }
 
 export const conf: BaseConf = {

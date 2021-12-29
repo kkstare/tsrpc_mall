@@ -9,6 +9,11 @@ import NetMgr from "../../../scripts/NetMgr";
 
 const {ccclass, property} = cc._decorator;
 
+enum WINDOWTYPE{
+    ADD_WIN,
+    EDIT_WIN
+}
+
 @ccclass
 export default class AddGoodsWindow extends cc.Component {
 
@@ -30,20 +35,47 @@ export default class AddGoodsWindow extends cc.Component {
     closeBtn:cc.Node
 
     // LIFE-CYCLE CALLBACKS:
+    private data;
+    private windowType:WINDOWTYPE = WINDOWTYPE.ADD_WIN
+
 
     onLoad () {
         this.addBtn.on(cc.Node.EventType.TOUCH_END,this.addGood,this)
         this.closeBtn.on(cc.Node.EventType.TOUCH_END,this.close,this)
     }
 
+    setData(data){
+        this.data = data
+        this.windowType = WINDOWTYPE.EDIT_WIN
+        this.goodName.string = this.data.name
+        this.des.string = this.data.des
+        this.price.string = this.data.price+""
+        this.num.string = this.data.restNum+""
+
+        this.addBtn.getComponentInChildren(cc.Label).string = "修改"
+    }
+    
     async addGood(){
-        //略过前端验证 默认输入合法
-        let ret = await NetMgr.client.callApi('AddGood', {
-           'Name':this.goodName.string,
-           'Des':this.des.string,
-           'price':~~this.price.string,
-           'restNum':~~this.num.string
-        });
+        let ret
+        if(this.windowType = WINDOWTYPE.ADD_WIN){
+            //略过前端验证 默认输入合法
+            ret = await NetMgr.client.callApi('AddGood', {
+                'Name':this.goodName.string,
+                'Des':this.des.string,
+                'price':~~this.price.string,
+                'restNum':~~this.num.string
+            });
+        }else{
+            ret = await NetMgr.client.callApi('EditGood', {
+                '_id':this.data._id,
+                'Name':this.goodName.string,
+                'Des':this.des.string,
+                'price':~~this.price.string,
+                'restNum':~~this.num.string
+            });  
+        }
+
+  
         
         if (!ret.isSucc) {
             alert(ret.err.message);

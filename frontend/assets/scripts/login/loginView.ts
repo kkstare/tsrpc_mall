@@ -6,6 +6,7 @@
 //  - https://docs.cocos.com/creator/manual/en/scripting/life-cycle-callbacks.html
 
 import { USERTYPR } from "../../src/shared/protocols/PtlLogin";
+import DataMgr from "../DataMgr";
 import NetMgr from "../NetMgr";
 
 const {ccclass, property} = cc._decorator;
@@ -46,6 +47,10 @@ export default class loginView extends cc.Component {
         
         // Success
         console.log(ret)
+
+        DataMgr.userId = ret.res.useId
+        DataMgr.money = ret.res.money
+
         if(ret.res.type == USERTYPR.BUSINESS){
             cc.director.loadScene("backView")
         }else{

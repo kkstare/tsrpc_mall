@@ -15,7 +15,8 @@ async function init() {
     // Auto implement APIs
     await server.autoImplementApi(path.resolve(__dirname, 'api'));
     await  DbMgr.initDb()
-    DbMgr.addUser("admin","admin")
+
+    // DbMgr.addUser("admin","admin")
     // TODO
     // Prepare something... (e.g. connect the db)
 };

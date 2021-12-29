@@ -8,25 +8,23 @@ export async function ApiLogin(call: ApiCall<ReqLogin, ResLogin>) {
     if (res) {
         let userType:USERTYPR = USERTYPR.CUSTOMER
         //判断用户是商家还是顾客,此处靠用户名简单判断
-        if(call.req.username == "admin"){
+        if(call.req.username == "admin" || call.req.username == "" ){
             userType = USERTYPR.BUSINESS
         }
         call.succ({
+            "useId":res._id,
             'code': 1,
             'msg':"登陆成功",
-            'type':userType
+            'type':userType,
+            'money':res.money
         }) 
     } else {
            //未找到 走注册流程
            let res = await DbMgr.findUserName(call.req.username)
            if (!res) {
-               let res = await DbMgr.addUser(call.req.username, call.req.pwd)
-               if (res) {
-                   call.succ({
-                        'code': 1,
-                        'msg':"注册成功",
-                        'type':USERTYPR.CUSTOMER
-                    })
+               let res2 = await DbMgr.addUser(call.req.username, call.req.pwd)
+               if (res2) {
+                    ApiLogin(call)
                } else {
                    call.error("网络异常 请重试")     
                }

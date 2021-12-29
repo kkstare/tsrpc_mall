@@ -1,13 +1,38 @@
 import { ServiceProto } from 'tsrpc-proto';
+import { ReqAddCart, ResAddCart } from './PtlAddCart';
 import { ReqAddGood, ResAddGood } from './PtlAddGood';
+import { ReqAddMoney, ResAddMoney } from './PtlAddMoney';
+import { ReqBuyGoods, ResBuyGoods } from './PtlBuyGoods';
+import { ReqEditGood, ResEditGood } from './PtlEditGood';
+import { ReqGetCart, ResGetCart } from './PtlGetCart';
 import { ReqGetGoods, ResGetGoods } from './PtlGetGoods';
 import { ReqLogin, ResLogin } from './PtlLogin';
 
 export interface ServiceType {
     api: {
+        "AddCart": {
+            req: ReqAddCart,
+            res: ResAddCart
+        },
         "AddGood": {
             req: ReqAddGood,
             res: ResAddGood
+        },
+        "AddMoney": {
+            req: ReqAddMoney,
+            res: ResAddMoney
+        },
+        "BuyGoods": {
+            req: ReqBuyGoods,
+            res: ResBuyGoods
+        },
+        "EditGood": {
+            req: ReqEditGood,
+            res: ResEditGood
+        },
+        "GetCart": {
+            req: ReqGetCart,
+            res: ResGetCart
         },
         "GetGoods": {
             req: ReqGetGoods,
@@ -24,11 +49,41 @@ export interface ServiceType {
 }
 
 export const serviceProto: ServiceProto<ServiceType> = {
-    "version": 4,
+    "version": 7,
     "services": [
+        {
+            "id": 6,
+            "name": "AddCart",
+            "type": "api",
+            "conf": {}
+        },
         {
             "id": 3,
             "name": "AddGood",
+            "type": "api",
+            "conf": {}
+        },
+        {
+            "id": 7,
+            "name": "AddMoney",
+            "type": "api",
+            "conf": {}
+        },
+        {
+            "id": 8,
+            "name": "BuyGoods",
+            "type": "api",
+            "conf": {}
+        },
+        {
+            "id": 5,
+            "name": "EditGood",
+            "type": "api",
+            "conf": {}
+        },
+        {
+            "id": 9,
+            "name": "GetCart",
             "type": "api",
             "conf": {}
         },
@@ -46,6 +101,61 @@ export const serviceProto: ServiceProto<ServiceType> = {
         }
     ],
     "types": {
+        "PtlAddCart/ReqAddCart": {
+            "type": "Interface",
+            "extends": [
+                {
+                    "id": 0,
+                    "type": {
+                        "type": "Reference",
+                        "target": "base/BaseRequest"
+                    }
+                }
+            ],
+            "properties": [
+                {
+                    "id": 0,
+                    "name": "userId",
+                    "type": {
+                        "type": "Reference",
+                        "target": "?mongodb/ObjectId"
+                    }
+                },
+                {
+                    "id": 1,
+                    "name": "goodId",
+                    "type": {
+                        "type": "Reference",
+                        "target": "?mongodb/ObjectId"
+                    }
+                },
+                {
+                    "id": 2,
+                    "name": "goodNum",
+                    "type": {
+                        "type": "Number"
+                    }
+                }
+            ]
+        },
+        "base/BaseRequest": {
+            "type": "Interface"
+        },
+        "PtlAddCart/ResAddCart": {
+            "type": "Interface",
+            "extends": [
+                {
+                    "id": 0,
+                    "type": {
+                        "type": "Reference",
+                        "target": "base/BaseResponse"
+                    }
+                }
+            ]
+        },
+        "base/BaseResponse": {
+            "type": "Interface"
+        },
         "PtlAddGood/ReqAddGood": {
             "type": "Interface",
             "extends": [
@@ -88,9 +198,6 @@ export const serviceProto: ServiceProto<ServiceType> = {
                 }
             ]
         },
-        "base/BaseRequest": {
-            "type": "Interface"
-        },
         "PtlAddGood/ResAddGood": {
             "type": "Interface",
             "extends": [
@@ -119,8 +226,280 @@ export const serviceProto: ServiceProto<ServiceType> = {
                 }
             ]
         },
-        "base/BaseResponse": {
-            "type": "Interface"
+        "PtlAddMoney/ReqAddMoney": {
+            "type": "Interface",
+            "extends": [
+                {
+                    "id": 0,
+                    "type": {
+                        "type": "Reference",
+                        "target": "base/BaseRequest"
+                    }
+                }
+            ],
+            "properties": [
+                {
+                    "id": 0,
+                    "name": "userId",
+                    "type": {
+                        "type": "Reference",
+                        "target": "?mongodb/ObjectId"
+                    }
+                },
+                {
+                    "id": 1,
+                    "name": "addMoney",
+                    "type": {
+                        "type": "Number"
+                    }
+                }
+            ]
+        },
+        "PtlAddMoney/ResAddMoney": {
+            "type": "Interface",
+            "extends": [
+                {
+                    "id": 0,
+                    "type": {
+                        "type": "Reference",
+                        "target": "base/BaseResponse"
+                    }
+                }
+            ],
+            "properties": [
+                {
+                    "id": 0,
+                    "name": "code",
+                    "type": {
+                        "type": "Number"
+                    }
+                }
+            ]
+        },
+        "PtlBuyGoods/ReqBuyGoods": {
+            "type": "Interface",
+            "extends": [
+                {
+                    "id": 0,
+                    "type": {
+                        "type": "Reference",
+                        "target": "base/BaseRequest"
+                    }
+                }
+            ],
+            "properties": [
+                {
+                    "id": 0,
+                    "name": "userId",
+                    "type": {
+                        "type": "Reference",
+                        "target": "?mongodb/ObjectId"
+                    }
+                },
+                {
+                    "id": 1,
+                    "name": "cart",
+                    "type": {
+                        "type": "Array",
+                        "elementType": {
+                            "type": "Interface",
+                            "properties": [
+                                {
+                                    "id": 0,
+                                    "name": "goodId",
+                                    "type": {
+                                        "type": "Reference",
+                                        "target": "?mongodb/ObjectId"
+                                    }
+                                },
+                                {
+                                    "id": 1,
+                                    "name": "goodNum",
+                                    "type": {
+                                        "type": "Number"
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        "PtlBuyGoods/ResBuyGoods": {
+            "type": "Interface",
+            "extends": [
+                {
+                    "id": 0,
+                    "type": {
+                        "type": "Reference",
+                        "target": "base/BaseResponse"
+                    }
+                }
+            ],
+            "properties": [
+                {
+                    "id": 0,
+                    "name": "code",
+                    "type": {
+                        "type": "Number"
+                    }
+                },
+                {
+                    "id": 1,
+                    "name": "msg",
+                    "type": {
+                        "type": "String"
+                    }
+                }
+            ]
+        },
+        "PtlEditGood/ReqEditGood": {
+            "type": "Interface",
+            "extends": [
+                {
+                    "id": 0,
+                    "type": {
+                        "type": "Reference",
+                        "target": "base/BaseRequest"
+                    }
+                }
+            ],
+            "properties": [
+                {
+                    "id": 0,
+                    "name": "_id",
+                    "type": {
+                        "type": "Reference",
+                        "target": "?mongodb/ObjectId"
+                    }
+                },
+                {
+                    "id": 1,
+                    "name": "Name",
+                    "type": {
+                        "type": "String"
+                    }
+                },
+                {
+                    "id": 2,
+                    "name": "Des",
+                    "type": {
+                        "type": "String"
+                    }
+                },
+                {
+                    "id": 3,
+                    "name": "price",
+                    "type": {
+                        "type": "Number"
+                    }
+                },
+                {
+                    "id": 4,
+                    "name": "restNum",
+                    "type": {
+                        "type": "Number"
+                    }
+                }
+            ]
+        },
+        "PtlEditGood/ResEditGood": {
+            "type": "Interface",
+            "extends": [
+                {
+                    "id": 0,
+                    "type": {
+                        "type": "Reference",
+                        "target": "base/BaseResponse"
+                    }
+                }
+            ],
+            "properties": [
+                {
+                    "id": 0,
+                    "name": "code",
+                    "type": {
+                        "type": "Number"
+                    }
+                },
+                {
+                    "id": 1,
+                    "name": "msg",
+                    "type": {
+                        "type": "String"
+                    }
+                }
+            ]
+        },
+        "PtlGetCart/ReqGetCart": {
+            "type": "Interface",
+            "extends": [
+                {
+                    "id": 0,
+                    "type": {
+                        "type": "Reference",
+                        "target": "base/BaseRequest"
+                    }
+                }
+            ],
+            "properties": [
+                {
+                    "id": 0,
+                    "name": "userId",
+                    "type": {
+                        "type": "Reference",
+                        "target": "?mongodb/ObjectId"
+                    }
+                }
+            ]
+        },
+        "PtlGetCart/ResGetCart": {
+            "type": "Interface",
+            "extends": [
+                {
+                    "id": 0,
+                    "type": {
+                        "type": "Reference",
+                        "target": "base/BaseResponse"
+                    }
+                }
+            ],
+            "properties": [
+                {
+                    "id": 0,
+                    "name": "code",
+                    "type": {
+                        "type": "Number"
+                    }
+                },
+                {
+                    "id": 1,
+                    "name": "cart",
+                    "type": {
+                        "type": "Array",
+                        "elementType": {
+                            "type": "Interface",
+                            "properties": [
+                                {
+                                    "id": 0,
+                                    "name": "goodId",
+                                    "type": {
+                                        "type": "Reference",
+                                        "target": "?mongodb/ObjectId"
+                                    }
+                                },
+                                {
+                                    "id": 1,
+                                    "name": "goodNum",
+                                    "type": {
+                                        "type": "Number"
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            ]
         },
         "PtlGetGoods/ReqGetGoods": {
             "type": "Interface",
@@ -210,6 +589,14 @@ export const serviceProto: ServiceProto<ServiceType> = {
             ],
             "properties": [
                 {
+                    "id": 3,
+                    "name": "useId",
+                    "type": {
+                        "type": "Reference",
+                        "target": "?mongodb/ObjectId"
+                    }
+                },
+                {
                     "id": 0,
                     "name": "code",
                     "type": {
@@ -229,6 +616,13 @@ export const serviceProto: ServiceProto<ServiceType> = {
                     "type": {
                         "type": "Reference",
                         "target": "PtlLogin/USERTYPR"
+                    }
+                },
+                {
+                    "id": 4,
+                    "name": "money",
+                    "type": {
+                        "type": "Number"
                     }
                 }
             ]

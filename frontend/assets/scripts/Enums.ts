@@ -1,0 +1,4 @@
+export enum PAGETYPE{
+    BUSINESS_WIN,
+    CUSTOMER_WIN
+}
