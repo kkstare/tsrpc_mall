@@ -57,7 +57,7 @@ export default class AddGoodsWindow extends cc.Component {
     
     async addGood(){
         let ret
-        if(this.windowType = WINDOWTYPE.ADD_WIN){
+        if(this.windowType == WINDOWTYPE.ADD_WIN){
             //略过前端验证 默认输入合法
             ret = await NetMgr.client.callApi('AddGood', {
                 'Name':this.goodName.string,

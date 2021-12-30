@@ -36,7 +36,6 @@ export class DbMgr {
     }
 
     static async addUser(username: string, password: string) {
-        //取最后一个值 居然排序了 应该有更优解
         let newObj = {
             userName: username,
             pwd: password,
@@ -73,15 +72,14 @@ export class DbMgr {
         if(!userData){
             return null
         }
+
+        //TODO  此处聚合查询没写好
         let add = true
         for (let index = 0; index < userData.cart.length; index++) {
             // const element = array[index];
             if(!add){
                 continue
             }
-            console.log(userData.cart[index].goodId , data.goodId)
-            console.log( data.goodId.equals(userData.cart[index].goodId))
-
             if(data.goodId.equals(userData.cart[index].goodId) ){
                 userData.cart[index].goodNum+=data.goodNum
                 add = false
@@ -113,25 +111,8 @@ export class DbMgr {
 
     static async buyGoods(data:ReqBuyGoods) {
         // let op = await DbMgr.db.collection('users').findOne({_id:data.userId})
-        // let userData = await DbMgr.db.collection('users').findOne({_id:data.userId})
-        let userData = await DbMgr.db.aggregate([
-            {
-                $lookup:{
-                    from:"users",
-                    localField:"_id",
-                    foreignField:"userid",
-                    as:"userId"
-                }
-            }
-            // {
-            //     $lookup:{
-            //         from:"goods",
-            //         localField:"_id",
-            //         foreignField:"userid",
-            //         as:"userId"
-            //     }
-            // }
-        ])
+        let userData = await DbMgr.db.collection('users').findOne({_id:data.userId})
+     
         console.log("userData========================")
         console.log(userData)
         if(!userData){
@@ -139,34 +120,34 @@ export class DbMgr {
         }
         let money = 0
         let msg = "" 
-        // for (let index = 0; index < data.cart.length; index++) {
-        //     let good = await DbMgr.db.collection('goods').findOne({_id:data.cart[index].goodId})
-        //     let allPrice = good!.price * data.cart[index].goodNum
-        //     if(good!.restNum < data.cart[index].goodNum ){
-        //         msg += good!.name +"数量不足;"
-        //     }
-        //     money+=allPrice
-        // }
+        for (let index = 0; index < data.cart.length; index++) {
+            let good = await DbMgr.db.collection('goods').findOne({_id:data.cart[index].goodId})
+            let allPrice = good!.price * data.cart[index].goodNum
+            if(good!.restNum < data.cart[index].goodNum ){
+                msg += good!.name +"数量不足;"
+            }
+            money+=allPrice
+        }
 
-        // if(msg != ""){
-        //     console.log(msg)
-        //     return null
-        // }
+        if(msg != ""){
+            console.log(msg)
+            return null
+        }
 
-        // if(userData.money < money){
-        //     console.log("用户只有",userData.money,"共需",money)
-        //     return null
-        // }
+        if(userData.money < money){
+            console.log("用户只有",userData.money,"共需",money)
+            return null
+        }
 
-        // let op = await DbMgr.db.collection('users').findOneAndUpdate({_id:data.userId},{
-        //     $set:{
-        //         money: userData.money - money
-        //     }
-        // })
+        let op = await DbMgr.db.collection('users').findOneAndUpdate({_id:data.userId},{
+            $set:{
+                money: userData.money - money
+            }
+        })
 
-        // return op
+        return op
 
-        return null
+
     }
 
 

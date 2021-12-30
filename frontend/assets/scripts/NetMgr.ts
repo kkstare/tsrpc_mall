@@ -3,6 +3,7 @@ import { serviceProto,ServiceType } from "../src/shared/protocols/serviceProto";
 
 
 
+
 export default class NetMgr{
     private static _instance: NetMgr;
     public static get instance(): NetMgr {
