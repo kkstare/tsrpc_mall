@@ -52,8 +52,15 @@ export default class FrontView extends cc.Component {
         } )
     }
 
-    openOrderView(){
-
+    async openOrderView(){
+        let ref = await NetMgr.client.callApi('SearchOrder',{
+            // userId:DataMgr.userId
+            'timeLimit':{
+                'beginTime':1,
+                'endTime':1
+            }
+        })
+        console.log(ref)
     }
     openCartView(){
         cc.resources.load('windows/cartWindow',cc.Prefab,(err,res:cc.Prefab)=>{

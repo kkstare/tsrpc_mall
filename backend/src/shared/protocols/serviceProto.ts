@@ -7,6 +7,7 @@ import { ReqEditGood, ResEditGood } from './PtlEditGood';
 import { ReqGetCart, ResGetCart } from './PtlGetCart';
 import { ReqGetGoods, ResGetGoods } from './PtlGetGoods';
 import { ReqLogin, ResLogin } from './PtlLogin';
+import { ReqSearchOrder, ResSearchOrder } from './PtlSearchOrder';
 
 export interface ServiceType {
     api: {
@@ -41,6 +42,10 @@ export interface ServiceType {
         "Login": {
             req: ReqLogin,
             res: ResLogin
+        },
+        "SearchOrder": {
+            req: ReqSearchOrder,
+            res: ResSearchOrder
         }
     },
     msg: {
@@ -49,7 +54,7 @@ export interface ServiceType {
 }
 
 export const serviceProto: ServiceProto<ServiceType> = {
-    "version": 7,
+    "version": 8,
     "services": [
         {
             "id": 6,
@@ -96,6 +101,12 @@ export const serviceProto: ServiceProto<ServiceType> = {
         {
             "id": 2,
             "name": "Login",
+            "type": "api",
+            "conf": {}
+        },
+        {
+            "id": 10,
+            "name": "SearchOrder",
             "type": "api",
             "conf": {}
         }
@@ -637,6 +648,84 @@ export const serviceProto: ServiceProto<ServiceType> = {
                 {
                     "id": 1,
                     "value": 1
+                }
+            ]
+        },
+        "PtlSearchOrder/ReqSearchOrder": {
+            "type": "Interface",
+            "extends": [
+                {
+                    "id": 0,
+                    "type": {
+                        "type": "Reference",
+                        "target": "base/BaseRequest"
+                    }
+                }
+            ],
+            "properties": [
+                {
+                    "id": 0,
+                    "name": "userId",
+                    "type": {
+                        "type": "Reference",
+                        "target": "?mongodb/ObjectId"
+                    },
+                    "optional": true
+                },
+                {
+                    "id": 1,
+                    "name": "timeLimit",
+                    "type": {
+                        "type": "Interface",
+                        "properties": [
+                            {
+                                "id": 0,
+                                "name": "beginTime",
+                                "type": {
+                                    "type": "Number"
+                                }
+                            },
+                            {
+                                "id": 1,
+                                "name": "endTime",
+                                "type": {
+                                    "type": "Number"
+                                }
+                            }
+                        ]
+                    },
+                    "optional": true
+                }
+            ]
+        },
+        "PtlSearchOrder/ResSearchOrder": {
+            "type": "Interface",
+            "extends": [
+                {
+                    "id": 0,
+                    "type": {
+                        "type": "Reference",
+                        "target": "base/BaseResponse"
+                    }
+                }
+            ],
+            "properties": [
+                {
+                    "id": 0,
+                    "name": "code",
+                    "type": {
+                        "type": "Number"
+                    }
+                },
+                {
+                    "id": 1,
+                    "name": "orders",
+                    "type": {
+                        "type": "Array",
+                        "elementType": {
+                            "type": "Any"
+                        }
+                    }
                 }
             ]
         }
