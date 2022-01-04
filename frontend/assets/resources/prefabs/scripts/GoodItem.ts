@@ -6,6 +6,7 @@
 //  - https://docs.cocos.com/creator/manual/en/scripting/life-cycle-callbacks.html
 
 import { PAGETYPE } from "../../../scripts/Enums";
+import BaseApp from "../../../scripts/frame/BaseApp";
 import AddCartWindow from "../../windows/scripts/AddCartWindow";
 import AddGoodsWindow from "../../windows/scripts/AddGoodsWindow";
 
@@ -61,7 +62,8 @@ export default class GoodItem extends cc.Component {
             }
             let window  = cc.instantiate(res)
             window.getComponent(AddCartWindow).setData(this.data)
-            this.node.addChild(window)
+            // this.node.addChild(window)
+            BaseApp.getInstance().layerMgr.addToBaseLayer(window)
         } )  
     }
     editClick(){
@@ -71,7 +73,8 @@ export default class GoodItem extends cc.Component {
             }
             let window  = cc.instantiate(res)
             window.getComponent(AddGoodsWindow).setData(this.data)
-            this.node.addChild(window)
+            BaseApp.getInstance().layerMgr.addToBaseLayer(window)
+
         } )
     }
 

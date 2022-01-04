@@ -1,6 +1,7 @@
 import { ObjectID } from "bson";
-import {Db, ModifyResult, MongoClient}  from "mongodb"
-import { resolve } from "path/posix";
+import {Db, ModifyResult, MongoClient, ReturnDocument}  from "mongodb"
+import DbOrder from "./dbType/DbOrder";
+import DbUsers from "./dbType/DbUsers";
 import { ReqAddCart } from "./shared/protocols/PtlAddCart";
 import { ReqAddGood } from "./shared/protocols/PtlAddGood";
 import { ReqBuyGoods } from "./shared/protocols/PtlBuyGoods";
@@ -37,13 +38,8 @@ export class DbMgr {
     }
 
     static async addUser(username: string, password: string) {
-        let newObj = {
-            userName: username,
-            pwd: password,
-            cart:[],
-            orders:[],
-            money:0,
-        }
+      
+        let newObj:DbUsers = new DbUsers(username,password)
         let op = await DbMgr.db.collection('users').insertOne(newObj);
 
         if(op){
@@ -54,12 +50,17 @@ export class DbMgr {
     }
 
     static async addMoney(userId: ObjectID, addMoney: number) {
-        let op= await DbMgr.db.collection('users').findOneAndUpdate({_id:userId},{
+        let op= await DbMgr.db.collection('users').findOneAndUpdate({
+            _id:userId
+        },{
             $inc:{
                 money:addMoney
-            }
+            }   
+        },{
+            returnDocument:'after',
         })
-        return op
+        console.log(op)
+        return op.value
     }
 
     static async addCart(data:ReqAddCart) {
@@ -93,74 +94,18 @@ export class DbMgr {
         return op
     }
 
-    // static async addCart(data:ReqAddCart) {
-    //     let op = await DbMgr.db.collection('users').aggregate([
-    //         {
-    //             $match:{
-    //                 _id:data.userId
-    //             }
-    //         },{
-    //             $project:{
-    //                 cart:1
-    //             }
-    //         }
-    //     ]).toArray()
-
-
-    //     console.log("******************")
-    //     console.log(op)
-    
-    //     return op
-    // }
-
-    // static async addCart(data:ReqAddCart) {
-    //     let userData = await DbMgr.db.collection('users').findOne({_id:data.userId})
-    //     if(!userData){
-    //         return null
-    //     }
-
-    //     //TODO  此处聚合查询没写好
-    //     let add = true
-    //     for (let index = 0; index < userData.cart.length; index++) {
-    //         // const element = array[index];
-    //         if(!add){
-    //             continue
-    //         }
-    //         if(data.goodId.equals(userData.cart[index].goodId) ){
-    //             userData.cart[index].goodNum+=data.goodNum
-    //             add = false
-    //         }   
-    //     }
-    //     if(add){
-    //         userData.cart.push({
-    //             "goodId":data.goodId,
-    //             "goodNum":data.goodNum
-    //         })
-    //     }
-
-    //     let op = await DbMgr.db.collection('users').updateOne({_id:data.userId},{
-    //         $set:{
-    //             cart:userData.cart
-    //         }
-    //     })
-    //     console.log(op)
-    //     return op
-    // }
 
     static async getCart(data:ReqGetCart) {
         let op = await DbMgr.db.collection('users').findOne({_id:data.userId})
         // op.cart
         console.log(op)
+        
+
         return op
     }
 
     static async buyGoods(data:ReqBuyGoods) {
-        // let op = await DbMgr.db.collection('users').findOne({_id:data.userId})
         let userData = await DbMgr.db.collection('users').findOne({_id:data.userId})
-        
-        console.time("buy")
-        console.log("userData========================")
-        console.log(userData)
         if(!userData){
             return
         }
@@ -185,9 +130,9 @@ export class DbMgr {
             console.log("用户只有",userData.money,"共需",money)
             return null
         }
-        let order:any = {
-            products : []
-        }
+        let products = []
+
+        
         for (let index = 0; index < data.cart.length; index++) {
             let good = await DbMgr.db.collection('goods').findOne({_id:data.cart[index].goodId})
             let goodObj = {
@@ -196,19 +141,22 @@ export class DbMgr {
                 dealNum:data.cart[index].goodNum,
                 dealAllPrice:good!.price*data.cart[index].goodNum,
             }
-            order.products.push(goodObj)
+            products.push(goodObj)
         }
-        order.createTime = Date.now()
-        order.totalPrice = money
+        let createTime = Date.now()
+        let totalPrice = money
 
         let op = await DbMgr.db.collection('users').findOneAndUpdate({_id:data.userId},{
             $inc:{
                 money: -money
-            },
-            $addToSet:{
-                orders:order
             }
+        },{
+            returnDocument:'after'
         })
+        let orderObj = new DbOrder(products,createTime,totalPrice)
+        await DbMgr.db.collection('orders').insertOne(
+            orderObj
+        )
 
         console.timeEnd("buy")
 

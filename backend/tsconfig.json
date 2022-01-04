@@ -6,7 +6,7 @@
     "module": "commonjs",
     "target": "es2018",
     "outDir": "dist",
-    "strict": true,
+    "strict": false,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": false,

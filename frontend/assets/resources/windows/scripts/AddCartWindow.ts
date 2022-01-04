@@ -6,6 +6,7 @@
 //  - https://docs.cocos.com/creator/manual/en/scripting/life-cycle-callbacks.html
 
 import DataMgr from "../../../scripts/DataMgr";
+import BaseApp from "../../../scripts/frame/BaseApp";
 import NetMgr from "../../../scripts/NetMgr";
 import PageCom from "../../prefabs/scripts/PageCom";
 
@@ -57,14 +58,26 @@ export default class AddCartWindow extends cc.Component {
         this.allPrice.string = num*this.data.price +""
 
     }
-    async addCartClick(){
-          
-        let ret = await NetMgr.client.callApi('AddCart', {
+    async addCartClick(){    
+        this.close()
+        console.log("1111111")
+
+        await NetMgr.client.callApi('AddCart', {
             'userId':DataMgr.userId,
             'goodId':this.data._id,
             'goodNum':this.chooseNum
-        });
+        }).then((res)=>{
+            if(res && res.isSucc){
+                BaseApp.getInstance().noticeMgr.addMsg("加入购物车成功")
+            }else{
+                BaseApp.getInstance().noticeMgr.addMsg(res.err.message)
+            }
+
+        })
+
+
     }
+
     close(){
         this.node.destroy()
     }

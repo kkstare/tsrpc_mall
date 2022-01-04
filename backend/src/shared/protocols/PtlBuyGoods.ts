@@ -12,6 +12,7 @@ export interface ReqBuyGoods extends BaseRequest {
 export interface ResBuyGoods extends BaseResponse {
     code:number
     msg:string
+    curMoney:number
 }
 
 export const conf: BaseConf = {

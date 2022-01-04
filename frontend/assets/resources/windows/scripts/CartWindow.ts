@@ -34,11 +34,15 @@ export default class NewClass extends cc.Component {
         console.log(this.data)
     }
     async buy(){
-        await NetMgr.client.callApi('BuyGoods',{
+        let data = await NetMgr.client.callApi('BuyGoods',{
             'userId':DataMgr.userId,
             'cart':this.data.res.cart
         })
 
+        console.log(data)
+        if(data){
+            DataMgr.money = data.res.curMoney
+        }
     }
     close(){
         this.node.destroy()

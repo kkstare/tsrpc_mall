@@ -6,8 +6,9 @@
 //  - https://docs.cocos.com/creator/manual/en/scripting/life-cycle-callbacks.html
 
 import GoodsWindow from "../../resources/windows/scripts/GoodsWindow";
-import DataMgr from "../DataMgr";
-import { PAGETYPE } from "../Enums";
+import dataMgr from "../DataMgr";
+import { C_EVENT, PAGETYPE } from "../Enums";
+import BaseApp from "../frame/BaseApp";
 import NetMgr from "../NetMgr";
 
 const {ccclass, property} = cc._decorator;
@@ -35,6 +36,7 @@ export default class FrontView extends cc.Component {
         this.mallBtn.on(cc.Node.EventType.TOUCH_END,this.openMallView,this)
         this.addMoneyBtn.on(cc.Node.EventType.TOUCH_END,this.addMoney,this)
 
+        cc.game.on(C_EVENT.CHANGE_MONET,this.updateMoney,this)
         this.initRender()
 
     }
@@ -48,7 +50,8 @@ export default class FrontView extends cc.Component {
             window.getComponent(GoodsWindow).setData({
                 "winType":PAGETYPE.CUSTOMER_WIN
             })
-            this.node.addChild(window)
+            BaseApp.getInstance().layerMgr.addToBaseLayer(window)
+            
         } )
     }
 
@@ -69,24 +72,38 @@ export default class FrontView extends cc.Component {
             }
             let window  = cc.instantiate(res)
 
-            this.node.addChild(window)
+            BaseApp.getInstance().layerMgr.addToBaseLayer(window)
+
         } )
     }
 
     async addMoney(){
+        // let data = await NetMgr.instance.sendMsg('AddMoney',{
+        //     'userId':dataMgr.userId,
+        //     'addMoney':234
+        // })
+
         let ref = await NetMgr.client.callApi('AddMoney',{
-            'userId':DataMgr.userId,
+            'userId':dataMgr.userId,
             'addMoney':234
         })
+
+        if(ref){
+            console.log(ref)
+            dataMgr.money = ref.res.curMoney
+        }
+
     }
 
     initRender(){
-        this.moneyLabel.string = DataMgr.money+""
+        this.moneyLabel.string = dataMgr.money+""
     }
 
     start () {
 
     }
-
+    updateMoney(money){
+        this.moneyLabel.string = money
+    }   
     // update (dt) {}
 }

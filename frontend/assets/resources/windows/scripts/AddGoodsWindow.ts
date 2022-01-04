@@ -73,6 +73,9 @@ export default class AddGoodsWindow extends cc.Component {
                 'price':Number(this.price.string),
                 'restNum':Number(this.num.string)
             });  
+
+            // NetMgr.instance.sendMsg(')
+
         }
 
   

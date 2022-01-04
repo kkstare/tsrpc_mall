@@ -7,6 +7,7 @@
 
 import GoodsWindow from "../../resources/windows/scripts/GoodsWindow";
 import { PAGETYPE } from "../Enums";
+import BaseApp from "../frame/BaseApp";
 
 const {ccclass, property} = cc._decorator;
 
@@ -41,7 +42,8 @@ export default class BackView extends cc.Component {
             window.getComponent(GoodsWindow).setData({
                 "winType":PAGETYPE.BUSINESS_WIN
             })
-            this.node.addChild(window)
+            BaseApp.getInstance().layerMgr.addToBaseLayer(window)
+            
         } )
     }
     openOrderView(){
@@ -50,7 +52,8 @@ export default class BackView extends cc.Component {
                 console.log(err)
             }
             let window  = cc.instantiate(res)
-            this.node.addChild(window)
+            BaseApp.getInstance().layerMgr.addToBaseLayer(window)
+
         } )
     }
     // update (dt) {}

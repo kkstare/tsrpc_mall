@@ -6,6 +6,7 @@
 //  - https://docs.cocos.com/creator/manual/en/scripting/life-cycle-callbacks.html
 
 import { PAGETYPE } from "../../../scripts/Enums";
+import BaseApp from "../../../scripts/frame/BaseApp";
 import NetMgr from "../../../scripts/NetMgr";
 import GoodItem from "../../prefabs/scripts/GoodItem";
 
@@ -63,7 +64,7 @@ export default class GoodsWindow extends cc.Component {
                 console.log(err)
             }
             let window  = cc.instantiate(res)
-            this.node.addChild(window)
+            BaseApp.getInstance().layerMgr.addToBaseLayer(window)
         } )
 
     }

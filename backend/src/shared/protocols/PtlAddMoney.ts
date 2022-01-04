@@ -8,6 +8,7 @@ export interface ReqAddMoney extends BaseRequest {
 
 export interface ResAddMoney extends BaseResponse {
     code:number
+    curMoney:number
 }
 
 export const conf: BaseConf = {

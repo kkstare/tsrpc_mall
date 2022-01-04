@@ -1,5 +1,8 @@
-import {HttpClient,WsClient} from "tsrpc-browser"
+import {ApiReturn, ApiReturnSucc, HttpClient,HttpClientTransportOptions,WsClient} from "tsrpc-browser"
+import { ResAddMoney } from "../src/shared/protocols/PtlAddMoney";
 import { serviceProto,ServiceType } from "../src/shared/protocols/serviceProto";
+import DataMgr from "./DataMgr";
+import BaseApp from "./frame/BaseApp";
 
 
 
@@ -30,8 +33,9 @@ export default class NetMgr{
         
         this._client = new HttpClient(serviceProto, {
             server: 'http://127.0.0.1:3000',
-            logger: console
+            logger: null,
         });
+
         // this._ws = new WsClient(serviceProto,{
         //     server: 'ws://127.0.0.1:3002',
         // })
@@ -39,6 +43,37 @@ export default class NetMgr{
         // this.listenMsg()
     }
 
+    async sendMsg<T extends keyof ServiceType['api']>(apiName: T, req: ServiceType['api'][T]['req'], options?: HttpClientTransportOptions){
+
+        await this._client.callApi(apiName,req).then((data)=>{
+            console.log(data)
+            if(!data.isSucc){
+                BaseApp.getInstance().noticeMgr.addMsg("网络错误")
+                return
+            }
+
+            if(data.err){
+                BaseApp.getInstance().noticeMgr.addMsg(data['err']['message'])
+                return
+            }
+
+            let realData:ServiceType['api'][T]['res']
+            if( apiName == 'AddMoney'  ){
+
+                // DataMgr.money = realData
+            }else if(apiName == 'AddCart'){
+
+            }else{
+
+            }
+        })
+   
+    }
+
+
+    listenCall(){
+       
+    }
     listenMsg(){
         // this._ws.listenMsg('Move',(msg)=>{
         //     console.log(msg)
