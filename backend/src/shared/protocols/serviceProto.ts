@@ -54,7 +54,7 @@ export interface ServiceType {
 }
 
 export const serviceProto: ServiceProto<ServiceType> = {
-    "version": 10,
+    "version": 12,
     "services": [
         {
             "id": 6,
@@ -89,8 +89,7 @@ export const serviceProto: ServiceProto<ServiceType> = {
         {
             "id": 9,
             "name": "GetCart",
-            "type": "api",
-            "conf": {}
+            "type": "api"
         },
         {
             "id": 4,
@@ -498,30 +497,62 @@ export const serviceProto: ServiceProto<ServiceType> = {
                     }
                 },
                 {
-                    "id": 1,
+                    "id": 3,
                     "name": "cart",
                     "type": {
                         "type": "Array",
                         "elementType": {
-                            "type": "Interface",
-                            "properties": [
-                                {
-                                    "id": 0,
-                                    "name": "goodId",
-                                    "type": {
-                                        "type": "Reference",
-                                        "target": "?mongodb/ObjectId"
-                                    }
-                                },
-                                {
-                                    "id": 1,
-                                    "name": "goodNum",
-                                    "type": {
-                                        "type": "Number"
-                                    }
-                                }
-                            ]
+                            "type": "Reference",
+                            "target": "PtlGetCart/cardProductType"
                         }
+                    }
+                }
+            ]
+        },
+        "PtlGetCart/cardProductType": {
+            "type": "Interface",
+            "properties": [
+                {
+                    "id": 0,
+                    "name": "_id",
+                    "type": {
+                        "type": "Reference",
+                        "target": "?mongodb/ObjectId"
+                    }
+                },
+                {
+                    "id": 1,
+                    "name": "name",
+                    "type": {
+                        "type": "String"
+                    }
+                },
+                {
+                    "id": 2,
+                    "name": "des",
+                    "type": {
+                        "type": "String"
+                    }
+                },
+                {
+                    "id": 3,
+                    "name": "price",
+                    "type": {
+                        "type": "Number"
+                    }
+                },
+                {
+                    "id": 4,
+                    "name": "restNum",
+                    "type": {
+                        "type": "Number"
+                    }
+                },
+                {
+                    "id": 5,
+                    "name": "goodNum",
+                    "type": {
+                        "type": "Number"
                     }
                 }
             ]

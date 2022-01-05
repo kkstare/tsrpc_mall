@@ -42,7 +42,7 @@ export default class BackView extends cc.Component {
             window.getComponent(GoodsWindow).setData({
                 "winType":PAGETYPE.BUSINESS_WIN
             })
-            BaseApp.getInstance().layerMgr.addToBaseLayer(window)
+            BaseApp.ins.layerMgr.addToBaseLayer(window)
             
         } )
     }
@@ -52,7 +52,7 @@ export default class BackView extends cc.Component {
                 console.log(err)
             }
             let window  = cc.instantiate(res)
-            BaseApp.getInstance().layerMgr.addToBaseLayer(window)
+            BaseApp.ins.layerMgr.addToBaseLayer(window)
 
         } )
     }

@@ -50,14 +50,14 @@ export default class FrontView extends cc.Component {
             window.getComponent(GoodsWindow).setData({
                 "winType":PAGETYPE.CUSTOMER_WIN
             })
-            BaseApp.getInstance().layerMgr.addToBaseLayer(window)
+            BaseApp.ins.layerMgr.addToBaseLayer(window)
             
         } )
     }
 
     async openOrderView(){
         let ref = await NetMgr.client.callApi('SearchOrder',{
-            // userId:DataMgr.userId
+            // userId:dataMgr.userId,
             'timeLimit':{
                 'beginTime':1,
                 'endTime':1
@@ -72,7 +72,7 @@ export default class FrontView extends cc.Component {
             }
             let window  = cc.instantiate(res)
 
-            BaseApp.getInstance().layerMgr.addToBaseLayer(window)
+            BaseApp.ins.layerMgr.addToBaseLayer(window)
 
         } )
     }

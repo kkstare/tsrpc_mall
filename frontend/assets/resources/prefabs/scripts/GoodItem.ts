@@ -63,7 +63,7 @@ export default class GoodItem extends cc.Component {
             let window  = cc.instantiate(res)
             window.getComponent(AddCartWindow).setData(this.data)
             // this.node.addChild(window)
-            BaseApp.getInstance().layerMgr.addToBaseLayer(window)
+            BaseApp.ins.layerMgr.addToBaseLayer(window)
         } )  
     }
     editClick(){
@@ -73,7 +73,7 @@ export default class GoodItem extends cc.Component {
             }
             let window  = cc.instantiate(res)
             window.getComponent(AddGoodsWindow).setData(this.data)
-            BaseApp.getInstance().layerMgr.addToBaseLayer(window)
+            BaseApp.ins.layerMgr.addToBaseLayer(window)
 
         } )
     }

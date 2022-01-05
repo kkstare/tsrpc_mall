@@ -21,7 +21,7 @@ export default class NoticeMgr implements UpdateAble{
 
     constructor(pre: cc.Prefab) {
 
-        BaseApp.getInstance().updateMgr.regist(this)
+        BaseApp.ins.updateMgr.regist(this)
         this._preNotice = pre;
         this._noticeQueue = []
         console.log("noticeMgr is loaded");
@@ -46,7 +46,7 @@ export default class NoticeMgr implements UpdateAble{
     private _showMsg(notice:NoticeData) {
         let node = cc.instantiate(this._preNotice)
         node.getComponent(Notice).init(notice)
-        BaseApp.getInstance().layerMgr.addToBaseLayer(node)
+        BaseApp.ins.layerMgr.addToBaseLayer(node)
     }
 
     frameUpdate(dt: any): void {

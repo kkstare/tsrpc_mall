@@ -48,12 +48,12 @@ export default class NetMgr{
         await this._client.callApi(apiName,req).then((data)=>{
             console.log(data)
             if(!data.isSucc){
-                BaseApp.getInstance().noticeMgr.addMsg("网络错误")
+                BaseApp.ins.noticeMgr.addMsg("网络错误")
                 return
             }
 
             if(data.err){
-                BaseApp.getInstance().noticeMgr.addMsg(data['err']['message'])
+                BaseApp.ins.noticeMgr.addMsg(data['err']['message'])
                 return
             }
 

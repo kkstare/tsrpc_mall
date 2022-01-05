@@ -12,7 +12,7 @@ export default class TipMgr{
   public showTipWindow(target,tipText: string, call1: CallableFunction, call2: CallableFunction = null): void{
       this._TipWindow.active = true
       this._TipWindow.getComponent(TipWindow).showTipWindow(target,tipText,call1,call2)
-      BaseApp.getInstance().layerMgr.addToBaseLayer(this._TipWindow)
+      BaseApp.ins.layerMgr.addToBaseLayer(this._TipWindow)
   }
 
 }

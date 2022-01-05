@@ -1,9 +1,6 @@
 import { ObjectId } from "mongodb";
 
-export default class DbGood{
-    constructor(){
-
-    }
+export type DbGood={
     _id:ObjectId
     name:string
     des:string

@@ -1,7 +1,9 @@
 import { ObjectID } from "bson";
 import {Db, ModifyResult, MongoClient, ReturnDocument}  from "mongodb"
-import DbOrder from "./dbType/DbOrder";
-import DbUsers from "./dbType/DbUsers";
+import DbOrder from "./shared/dbType/DbOrder";
+import DbUsers from "./shared/dbType/DbUsers";
+import Good from "./logic/good/Good";
+import GoodMgr from "./logic/good/GoodMgr";
 import { ReqAddCart } from "./shared/protocols/PtlAddCart";
 import { ReqAddGood } from "./shared/protocols/PtlAddGood";
 import { ReqBuyGoods } from "./shared/protocols/PtlBuyGoods";
@@ -59,7 +61,6 @@ export class DbMgr {
         },{
             returnDocument:'after',
         })
-        console.log(op)
         return op.value
     }
 
@@ -88,23 +89,20 @@ export class DbMgr {
                 }
             })
         }
-        console.log("******************")
-        console.log(op)
     
         return op
     }
 
 
-    static async getCart(data:ReqGetCart) {
+    static async getCart(data:ReqGetCart){
         let op = await DbMgr.db.collection('users').findOne({_id:data.userId})
         // op.cart
-        console.log(op)
-        
-
         return op
     }
 
     static async buyGoods(data:ReqBuyGoods) {
+        console.time("buy")
+        console.log(data)
         let userData = await DbMgr.db.collection('users').findOne({_id:data.userId})
         if(!userData){
             return
@@ -113,7 +111,10 @@ export class DbMgr {
         let msg = "" 
         for (let index = 0; index < data.cart.length; index++) {
             //有model层后可以省略每次的查询
-            let good = await DbMgr.db.collection('goods').findOne({_id:data.cart[index].goodId})
+            // let good = await DbMgr.db.collection('goods').findOne({_id:data.cart[index].goodId})
+            //数据量太小 看不出区别 
+            let good = GoodMgr.ins.getGoodByObjectId(data.cart[index].goodId)
+
             let allPrice = good!.price * data.cart[index].goodNum
             if(good!.restNum < data.cart[index].goodNum ){
                 msg += good!.name +"数量不足;"
@@ -122,7 +123,6 @@ export class DbMgr {
         }
 
         if(msg != ""){
-            console.log(msg)
             return null
         }
 
@@ -131,10 +131,9 @@ export class DbMgr {
             return null
         }
         let products = []
-
-        
+  
         for (let index = 0; index < data.cart.length; index++) {
-            let good = await DbMgr.db.collection('goods').findOne({_id:data.cart[index].goodId})
+            let good = GoodMgr.ins.getGoodByObjectId(data.cart[index].goodId)
             let goodObj = {
                 goodId:good!._id,
                 dealPrice:good!.price,
@@ -143,7 +142,6 @@ export class DbMgr {
             }
             products.push(goodObj)
         }
-        let createTime = Date.now()
         let totalPrice = money
 
         let op = await DbMgr.db.collection('users').findOneAndUpdate({_id:data.userId},{
@@ -153,7 +151,8 @@ export class DbMgr {
         },{
             returnDocument:'after'
         })
-        let orderObj = new DbOrder(products,createTime,totalPrice)
+        console.log(op)
+        let orderObj = new DbOrder(products,totalPrice,data.userId)
         await DbMgr.db.collection('orders').insertOne(
             orderObj
         )
@@ -164,14 +163,10 @@ export class DbMgr {
     }
 
     static async addGood(goodInfo:ReqAddGood) {
-        let good = {
-            name:goodInfo.Name,
-            des:goodInfo.Des,
-            price:goodInfo.price,
-            restNum:goodInfo.restNum
-        }
-        
-        let op = await DbMgr.db.collection('goods').insertOne(good);
+        let good = new Good(goodInfo)
+        let op = await DbMgr.db.collection('goods').insertOne(good.dbInfo);
+        good.dbInfo._id = op.insertedId
+        GoodMgr.ins.addGood(good)
 
         if(op){
             return good
@@ -180,47 +175,33 @@ export class DbMgr {
         }
     }
 
-    static async searchOrder(data:ReqSearchOrder){
-        console.log(data)
-        let op = await DbMgr.db.collection('users').aggregate([  
+    static async searchOrderByUserId(data:ReqSearchOrder){
+        let op = await DbMgr.db.collection('orders').aggregate([  
             {
                 $match:{
-                    _id:data.userId
-                }
-            },{
-                $project:{
-                    orders:1
+                    userId:data.userId
                 }
             }
         ]).toArray() ;
         console.log("order**********")
         console.log(op)
-        return op[0]
+        return op
     }
 
     static async searchOrderByTime(data:ReqSearchOrder){
-        let op = await DbMgr.db.collection('users').aggregate([  
+        let op = await DbMgr.db.collection('orders').aggregate([  
             {
-                $project:{
-                    orders:1,
-                }
-            },{
-                $unwind:"$orders",
-            },{
                 $sort:{
-                    "orders.createTime":1
+                    "createTime":1
                 }
             },{
                 $match:{
-                    "orders.createTime":{
-                        $gt:1640939069606
+                    "createTime":{
+                        $lt:1640939069606
                     }
                 }
             }
         ]).toArray() ; 
-        console.log("searchOrderByTime*(((((((((************")
-
-        console.log(op)
         return op
     }
 
@@ -236,7 +217,6 @@ export class DbMgr {
             }
         });
 
-        console.log(op)
         if(op){
             return goodInfo
         } else {

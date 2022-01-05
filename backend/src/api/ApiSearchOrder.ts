@@ -6,7 +6,7 @@ export async function ApiSearchOrder(call: ApiCall<ReqSearchOrder, ResSearchOrde
     // TODO
     let res:any
     if(call.req.userId){
-        res = await DbMgr.searchOrder(call.req)
+        res = await DbMgr.searchOrderByUserId(call.req)
     }else if(call.req.timeLimit){
         res = await DbMgr.searchOrderByTime(call.req)
     }

@@ -34,7 +34,7 @@ export default class ActivityDownloadUtil extends cc.Component {
         return true
       } else {
         console.log("活动正在下载 当前进度", ActivityDownloadUtil.downloads[name].finish + "/" + ActivityDownloadUtil.downloads[name].total)
-        BaseApp.getInstance().noticeMgr.addMsg("活动正在下载 当前进度"+ActivityDownloadUtil.downloads[name].finish + "/" + ActivityDownloadUtil.downloads[name].total)
+        BaseApp.ins.noticeMgr.addMsg("活动正在下载 当前进度"+ActivityDownloadUtil.downloads[name].finish + "/" + ActivityDownloadUtil.downloads[name].total)
         return false
       }
     }
@@ -51,7 +51,7 @@ export default class ActivityDownloadUtil extends cc.Component {
         }
       }
     
-      BaseApp.getInstance().noticeMgr.addMsg("开始加载活动"+name)
+      BaseApp.ins.noticeMgr.addMsg("开始加载活动"+name)
 
       cc.assetManager.loadBundle('http://106.53.94.70/assets/'+name, (err, bundle) => {
         console.log(bundle)

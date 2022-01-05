@@ -68,9 +68,9 @@ export default class AddCartWindow extends cc.Component {
             'goodNum':this.chooseNum
         }).then((res)=>{
             if(res && res.isSucc){
-                BaseApp.getInstance().noticeMgr.addMsg("加入购物车成功")
+                BaseApp.ins.noticeMgr.addMsg("加入购物车成功")
             }else{
-                BaseApp.getInstance().noticeMgr.addMsg(res.err.message)
+                BaseApp.ins.noticeMgr.addMsg(res.err.message)
             }
 
         })

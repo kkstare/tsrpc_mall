@@ -16,11 +16,11 @@ const {logMethod,logMethod2} = MyDecorator
 export default class TipWindow extends cc.Component implements UpdateAble {
 
     frameUpdate(dt: any): void {
-        this.text.string = BaseApp.getInstance().updateMgr.localTime.toString()
+        this.text.string = BaseApp.ins.updateMgr.localTime.toString()
     }
     secondUpdate(): void {
         console.log("秒刷新")
-        this.text.string = BaseApp.getInstance().updateMgr.localTime.toString()
+        this.text.string = BaseApp.ins.updateMgr.localTime.toString()
     }
 
     @property(cc.Node)
@@ -41,7 +41,7 @@ export default class TipWindow extends cc.Component implements UpdateAble {
         TipWindow._instance = this
     }
     onEnable() {
-        BaseApp.getInstance().updateMgr.regist(this)
+        BaseApp.ins.updateMgr.regist(this)
     }
 
     start () {
@@ -69,7 +69,7 @@ export default class TipWindow extends cc.Component implements UpdateAble {
 
     close() {
         this.node.active = false
-        BaseApp.getInstance().updateMgr.unRegist(this)
+        BaseApp.ins.updateMgr.unRegist(this)
 
     }
 

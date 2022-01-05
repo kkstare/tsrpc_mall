@@ -64,7 +64,7 @@ export default class GoodsWindow extends cc.Component {
                 console.log(err)
             }
             let window  = cc.instantiate(res)
-            BaseApp.getInstance().layerMgr.addToBaseLayer(window)
+            BaseApp.ins.layerMgr.addToBaseLayer(window)
         } )
 
     }

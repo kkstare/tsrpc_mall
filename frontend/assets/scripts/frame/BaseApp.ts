@@ -26,7 +26,7 @@ class BaseApp extends cc.Component {
     @property(cc.Prefab)
     notice:cc.Prefab = null
     private static _instance: BaseApp;
-    public static getInstance(): BaseApp {
+    public static get ins(): BaseApp {
         if (!BaseApp._instance) {
             BaseApp._instance = new BaseApp();
         }

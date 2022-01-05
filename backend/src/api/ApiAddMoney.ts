@@ -5,7 +5,6 @@ import { ReqAddMoney, ResAddMoney } from "../shared/protocols/PtlAddMoney";
 export async function ApiAddMoney(call: ApiCall<ReqAddMoney, ResAddMoney>) {
     // TODO
     let res = await  DbMgr.addMoney(call.req.userId,call.req.addMoney)
-    console.log(res)
     if(res){
         call.succ({
             'code': 1,

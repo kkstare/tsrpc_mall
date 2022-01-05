@@ -5,11 +5,12 @@ export default class DbOrder{
     products:productInfo[]
     createTime:number
     totalPrice:number
-
-    constructor(products:productInfo[],createTime:number,totalPrice:number){
+    userId:ObjectId
+    constructor(products:productInfo[],totalPrice:number,userId:ObjectId){
         this.products = products
-        this.createTime = createTime
+        this.createTime = Date.now()
         this.totalPrice = totalPrice
+        this.userId = userId
     }
 
 }
